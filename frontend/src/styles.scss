@@ -1,0 +1,54 @@
+/* Global theme — black + neon green */
+:root {
+  --bg: #000;
+  --bg-soft: #0a0f0a;
+  --neon: #39ff14;
+  --neon-dim: #1faa07;
+  --text: #d6ffd6;
+  --muted: #4d7a4d;
+  --border: #134d13;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  min-height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--neon);
+  color: var(--bg);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neon-dim);
+  border-radius: 5px;
+
+  &:hover {
+    background: var(--neon);
+  }
+}
+
+a {
+  color: var(--neon);
+  text-decoration: none;
+
+  &:hover {
+    text-shadow: 0 0 6px var(--neon);
+  }
+}
