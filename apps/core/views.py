@@ -3,6 +3,7 @@
 from constance import config
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 
@@ -24,3 +25,22 @@ class HealthView(APIView):
 
     def get(self, request):
         return Response({'status': 'ok'})
+
+
+class ApiRootView(APIView):
+    """Índice de endpoints disponibles. Sirve como root del backend para debug."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({
+            'name': 'Nandetuiter API',
+            'frontend': 'http://localhost:4200',
+            'admin': request.build_absolute_uri('/admin/'),
+            'endpoints': {
+                'config': request.build_absolute_uri(reverse('core:config')),
+                'health': request.build_absolute_uri(reverse('core:health')),
+                'login': request.build_absolute_uri('/api/auth/login/'),
+                'refresh': request.build_absolute_uri('/api/auth/refresh/'),
+            },
+        })

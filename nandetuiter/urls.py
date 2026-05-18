@@ -7,7 +7,10 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from apps.core.views import ApiRootView
+
 urlpatterns = [
+    path('', ApiRootView.as_view(), name='api-root'),
     path('admin/', admin.site.urls),
 
     # Core (config pública + health)

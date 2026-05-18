@@ -1,11 +1,25 @@
-"""
-Endpoints de posts. Placeholders — Sem 2 los completa Luis.
+"""Endpoints de posts."""
 
-TODO Sem 2:
-- POST/GET /api/posts/         (crear, listar global)
-- GET/DELETE /api/posts/<id>/
-- POST/DELETE /api/posts/<id>/like/
-- GET /api/feed/               (posts de seguidos, paginado)
-- Validar contenido contra constance.config.POST_MAX_CHARS
-- Paginación según constance.config.POSTS_PER_PAGE
-"""
+from constance import config
+from rest_framework import generics, permissions
+from rest_framework.pagination import PageNumberPagination
+
+from .models import Post
+from .serializers import PostSerializer
+
+
+class PostsPagination(PageNumberPagination):
+    page_size_query_param = 'page_size'
+
+    def get_page_size(self, request):
+        return config.POSTS_PER_PAGE
+
+
+class PostListCreateView(generics.ListCreateAPIView):
+    queryset = Post.objects.select_related('author').all()
+    serializer_class = PostSerializer
+    pagination_class = PostsPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)

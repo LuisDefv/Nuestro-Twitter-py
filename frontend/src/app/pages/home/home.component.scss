@@ -1,0 +1,179 @@
+$bg: #000;
+$bg-soft: #0a0f0a;
+$neon: #39ff14;
+$neon-dim: #1faa07;
+$text: #d6ffd6;
+$muted: #4d7a4d;
+$border: #134d13;
+
+:host {
+  display: block;
+  background: $bg;
+  color: $text;
+  min-height: 100vh;
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+}
+
+.home {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 1rem 4rem;
+
+  &__hero {
+    text-align: center;
+    margin-bottom: 1.5rem;
+
+    h1 {
+      font-size: 2.6rem;
+      margin: 0;
+      color: $neon;
+      text-shadow: 0 0 6px rgba($neon, 0.7), 0 0 18px rgba($neon, 0.35);
+      letter-spacing: 2px;
+    }
+  }
+
+  &__tag {
+    color: $muted;
+    margin: 0.4rem 0 0;
+    font-size: 0.9rem;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 1.25rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    padding: 0.6rem 1rem;
+    border: 1px dashed $border;
+    color: $muted;
+    font-size: 0.85rem;
+
+    b {
+      color: $neon;
+      font-weight: 600;
+    }
+  }
+}
+
+.card {
+  background: $bg-soft;
+  border: 1px solid $border;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 0 0 1px rgba($neon, 0.05), 0 0 12px rgba($neon, 0.06);
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: $neon-dim;
+    box-shadow: 0 0 0 1px rgba($neon, 0.15), 0 0 18px rgba($neon, 0.18);
+  }
+
+  h2 {
+    margin: 0 0 0.5rem;
+    color: $neon;
+    font-size: 1.05rem;
+  }
+
+  code {
+    background: #001500;
+    color: $neon;
+    padding: 1px 6px;
+    border: 1px solid $border;
+    border-radius: 3px;
+  }
+
+  &--loading {
+    color: $muted;
+  }
+
+  &--error {
+    border-color: #ff5555;
+    box-shadow: 0 0 12px rgba(#ff5555, 0.2);
+
+    h2 {
+      color: #ff5555;
+    }
+  }
+}
+
+.post {
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  &__author {
+    color: $neon;
+    font-weight: 700;
+    text-shadow: 0 0 4px rgba($neon, 0.5);
+  }
+
+  &__date {
+    color: $muted;
+    font-size: 0.78rem;
+  }
+
+  &__body {
+    margin: 0.25rem 0 0.75rem;
+    line-height: 1.5;
+    color: $text;
+    white-space: pre-wrap;
+  }
+
+  &__foot {
+    display: flex;
+    justify-content: space-between;
+    color: $neon-dim;
+    font-size: 0.82rem;
+    border-top: 1px dashed $border;
+    padding-top: 0.5rem;
+  }
+
+  &__id {
+    color: $muted;
+  }
+}
+
+.pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+
+  &__btn {
+    background: transparent;
+    color: $neon;
+    border: 1px solid $neon-dim;
+    padding: 0.5rem 1.1rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+
+    &:hover:not(:disabled) {
+      background: $neon;
+      color: $bg;
+      box-shadow: 0 0 14px rgba($neon, 0.6);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+
+  &__info {
+    color: $muted;
+    font-size: 0.9rem;
+
+    b {
+      color: $neon;
+    }
+  }
+}
