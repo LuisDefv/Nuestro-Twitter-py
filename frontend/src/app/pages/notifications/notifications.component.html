@@ -1,0 +1,32 @@
+<section class="notif">
+  <header class="notif__header">
+    <h1>&gt; notificaciones</h1>
+    <button class="mark-read-btn" (click)="markAllRead()">Marcar todas leídas</button>
+  </header>
+
+  @if (loading()) {
+    <article class="card card--loading"><p>&gt; cargando...</p></article>
+  } @else {
+    @for (n of notifications(); track n.id) {
+      <article class="notif__item" [class.unread]="!n.is_read">
+        <div class="notif__avatar">
+          @if (n.actor_avatar) {
+            <img [src]="n.actor_avatar" alt="" />
+          } @else {
+            <div class="placeholder">{{ n.actor_username[0] }}</div>
+          }
+        </div>
+        <div class="notif__body">
+          <a [routerLink]="['/users', n.actor_username]"><strong>{{ '@' + n.actor_username }}</strong></a>
+          {{ verbLabel(n.verb) }}
+          @if (n.target_post) {
+            <a [routerLink]="['/']" class="notif__post-link">ver post</a>
+          }
+          <time>{{ n.created_at | date:'short' }}</time>
+        </div>
+      </article>
+    } @empty {
+      <article class="card"><p>&gt; sin notificaciones</p></article>
+    }
+  }
+</section>
