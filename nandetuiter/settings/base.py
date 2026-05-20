@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # Apps locales
     'apps.accounts',
     'apps.posts',
+    'apps.notifications',
     'apps.core',
 ]
 

@@ -1,0 +1,64 @@
+<section class="user-profile">
+  @if (profile(); as p) {
+    <header class="profile-card">
+      <div class="profile-card__avatar">
+        @if (p.avatar_url) {
+          <img [src]="p.avatar_url" alt="avatar" />
+        } @else {
+          <div class="avatar-placeholder">{{ '@' + p.username[0] }}</div>
+        }
+      </div>
+      <div class="profile-card__info">
+        <h1>{{ '@' + p.username }}</h1>
+        @if (p.bio) { <p class="bio">{{ p.bio }}</p> }
+        @if (p.location) {
+          <p class="location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="var(--bg)"/></svg>
+            {{ p.location }}
+          </p>
+        }
+        <p class="joined">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          {{ p.date_joined | date:'mediumDate' }}
+        </p>
+        <div class="stats">
+          <span><strong>{{ p.posts_count }}</strong> posts</span>
+          <span><strong>{{ p.followers_count }}</strong> seguidores</span>
+          <span><strong>{{ p.following_count }}</strong> siguiendo</span>
+        </div>
+      </div>
+      @if (!isOwnProfile()) {
+        <button class="follow-btn" [class.following]="p.is_following" (click)="toggleFollow()" [disabled]="followLoading()">
+          {{ p.is_following ? 'Dejar de seguir' : 'Seguir' }}
+        </button>
+      } @else {
+        <a class="edit-btn" routerLink="/profile">Editar perfil</a>
+      }
+    </header>
+
+    <div class="posts-list">
+      @for (post of posts(); track post.id) {
+        <article class="card post">
+          <p class="post__body">{{ post.content }}</p>
+          <footer class="post__foot">
+            <time>{{ post.created_at | date:'short' }}</time>
+            <button class="like-btn" [class.liked]="post.is_liked" (click)="toggleLike(post)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              {{ post.likes_count }}
+            </button>
+          </footer>
+        </article>
+      } @empty {
+        <article class="card"><p>&gt; sin posts todavía.</p></article>
+      }
+    </div>
+  } @else {
+    @if (loading()) {
+      <article class="card card--loading"><p>&gt; cargando...</p></article>
+    } @else if (error()) {
+      <article class="card card--error"><h2>[ ERR ]</h2><p>{{ error() }}</p></article>
+    }
+  }
+</section>

@@ -1,0 +1,123 @@
+.profile-card {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  background: var(--bg-soft, #111);
+  border: 1px solid var(--border, #333);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-card__avatar img,
+.avatar-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  background: var(--neon, #00ff41);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.profile-card__info {
+  flex: 1;
+}
+
+.profile-card__info h1 {
+  margin: 0 0 0.5rem;
+  color: var(--neon, #00ff41);
+}
+
+.bio { color: var(--text, #e0e0e0); }
+.location, .joined {
+  color: var(--text-muted, #888);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  color: var(--text-muted, #888);
+}
+
+.follow-btn, .edit-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.follow-btn {
+  background: var(--neon, #00ff41);
+  color: #000;
+  border: none;
+}
+
+.follow-btn.following {
+  background: transparent;
+  border: 1px solid var(--neon, #00ff41);
+  color: var(--neon, #00ff41);
+}
+
+.edit-btn {
+  background: transparent;
+  border: 1px solid var(--border, #333);
+  color: var(--text, #e0e0e0);
+  text-decoration: none;
+}
+
+.post {
+  margin-bottom: 1rem;
+}
+
+.post__body {
+  margin-bottom: 0.5rem;
+}
+
+.post__foot {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted, #888);
+  font-size: 0.85rem;
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted, #888);
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: #ff4081;
+    background: rgba(#ff4081, 0.08);
+  }
+
+  &.liked {
+    color: #ff4081;
+
+    svg {
+      fill: #ff4081;
+    }
+  }
+}

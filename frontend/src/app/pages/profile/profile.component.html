@@ -1,0 +1,38 @@
+<section class="profile">
+  <header class="profile__header">
+    <h1>&gt; editar_perfil</h1>
+  </header>
+
+  @if (loading()) {
+    <article class="card card--loading">
+      <p>&gt; cargando...</p>
+    </article>
+  } @else {
+    <form class="profile__form" [formGroup]="form" (ngSubmit)="save()">
+      <label>
+        <span>Bio</span>
+        <textarea formControlName="bio" rows="3" maxlength="160"></textarea>
+      </label>
+      <label>
+        <span>Ubicación</span>
+        <input type="text" formControlName="location" maxlength="100" />
+      </label>
+      <label>
+        <span>Avatar URL</span>
+        <input type="url" formControlName="avatar_url" />
+      </label>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+      @if (success()) {
+        <p class="success">✓ Perfil actualizado</p>
+      }
+
+      <button type="submit" [disabled]="saving()" class="save-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        {{ saving() ? 'Guardando…' : 'Guardar cambios' }}
+      </button>
+    </form>
+  }
+</section>
