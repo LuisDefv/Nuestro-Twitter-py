@@ -1,6 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface AppConfig {
   site_name: string;
@@ -11,9 +12,11 @@ interface AppConfig {
 interface Post {
   id: number;
   author_username: string;
+  author_avatar: string;
   content: string;
   created_at: string;
   likes_count: number;
+  is_liked: boolean;
 }
 
 interface PaginatedPosts {
@@ -26,7 +29,7 @@ interface PaginatedPosts {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -91,5 +94,15 @@ export class HomeComponent implements OnInit {
 
   prev(): void {
     if (this.hasPrev()) this.loadPage(this.page() - 1);
+  }
+
+  toggleLike(post: Post): void {
+    const method = post.is_liked ? 'DELETE' : 'POST';
+    this.http.request(method, `${this.apiBase}/posts/${post.id}/like/`, { responseType: 'text' }).subscribe({
+      next: () => {
+        post.is_liked = !post.is_liked;
+        post.likes_count += post.is_liked ? 1 : -1;
+      },
+    });
   }
 }
