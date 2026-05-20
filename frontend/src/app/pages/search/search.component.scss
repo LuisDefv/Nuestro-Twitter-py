@@ -1,0 +1,80 @@
+.search__bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.search__bar input {
+  flex: 1;
+  background: var(--bg-soft, #111);
+  border: 1px solid var(--border, #333);
+  color: var(--text, #e0e0e0);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.search__bar input:focus {
+  outline: none;
+  border-color: var(--neon, #00ff41);
+}
+
+.search__bar button {
+  background: var(--neon, #00ff41);
+  color: #000;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+}
+
+.search__bar button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.user-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 0.5rem;
+}
+
+.user-card:hover {
+  background: var(--bg-soft, #111);
+}
+
+.user-card__avatar img,
+.placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.placeholder {
+  background: var(--neon, #00ff41);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.user-card__info p {
+  color: var(--text-muted, #888);
+  font-size: 0.85rem;
+}
+
+.loc {
+  font-size: 0.8rem;
+  color: var(--text-muted, #888);
+}

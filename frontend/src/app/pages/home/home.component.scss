@@ -186,3 +186,31 @@ $border: #134d13;
     }
   }
 }
+
+.like-btn {
+  background: none;
+  border: none;
+  color: $muted;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: #ff4081;
+    background: rgba(#ff4081, 0.08);
+  }
+
+  &.liked {
+    color: #ff4081;
+
+    svg {
+      fill: #ff4081;
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<section class="search">
+  <header>
+    <h1>&gt; buscar</h1>
+  </header>
+
+  <div class="search__bar">
+    <input
+      type="text"
+      [(ngModel)]="query"
+      (keyup.enter)="search()"
+      placeholder="Buscar usuarios..."
+    />
+    <button (click)="search()" [disabled]="!query.trim() || searching()">
+      @if (searching()) {
+        Buscando…
+      } @else {
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Buscar
+      }
+    </button>
+  </div>
+
+  @if (searched()) {
+    <div class="search__results">
+      @for (user of results(); track user.username) {
+        <a class="user-card" [routerLink]="['/users', user.username]">
+          <div class="user-card__avatar">
+            @if (user.avatar_url) {
+              <img [src]="user.avatar_url" alt="" />
+            } @else {
+              <div class="placeholder">{{ '@' + user.username[0] }}</div>
+            }
+          </div>
+          <div class="user-card__info">
+            <strong>{{ '@' + user.username }}</strong>
+            @if (user.bio) { <p>{{ user.bio }}</p> }
+            @if (user.location) { <span class="loc">📍 {{ user.location }}</span> }
+          </div>
+        </a>
+      } @empty {
+        <article class="card"><p>&gt; sin resultados</p></article>
+      }
+    </div>
+  }
+</section>

@@ -3,6 +3,11 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 import { authGuard } from './core/auth.guard';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { ComposerComponent } from './pages/composer/composer.component';
+import { SearchComponent } from './pages/search/search.component';
+import { NotificationsComponent } from './pages/notifications/notifications.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -12,6 +17,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', component: HomeComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'users/:username', component: UserProfileComponent },
+      { path: 'composer', component: ComposerComponent },
+      { path: 'search', component: SearchComponent },
+      { path: 'notifications', component: NotificationsComponent },
     ],
   },
   { path: '**', redirectTo: '' },

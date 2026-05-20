@@ -1,0 +1,20 @@
+<section class="composer">
+  <header>
+    <h1>&gt; nuevo_post</h1>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <textarea formControlName="content" rows="4" maxlength="280" placeholder="¿Qué está pasando?"></textarea>
+    <div class="composer__info">
+      <span class="char-count">{{ form.controls.content.value.length }}/280</span>
+    </div>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button type="submit" [disabled]="form.invalid || saving()">
+      {{ saving() ? 'Publicando…' : 'Publicar' }}
+    </button>
+  </form>
+</section>

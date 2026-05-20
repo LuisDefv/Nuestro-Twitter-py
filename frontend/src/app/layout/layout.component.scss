@@ -95,18 +95,43 @@
     gap: 0.25rem;
 
     a {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
       padding: 0.55rem 0.75rem;
       border-radius: 6px;
       color: var(--text);
       text-decoration: none;
       font-size: 0.95rem;
       border: 1px solid transparent;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      position: relative;
+
+      .icon-wrap {
+        position: relative;
+        display: flex;
+        flex-shrink: 0;
+      }
 
       &:hover {
         background: rgba(57, 255, 20, 0.08);
         color: var(--neon);
         border-color: var(--neon-dim);
-        text-shadow: 0 0 4px var(--neon);
+      }
+
+      .badge {
+        position: absolute;
+        top: -6px;
+        right: -8px;
+        background: #ff4081;
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: bold;
+        padding: 0.1rem 0.3rem;
+        border-radius: 8px;
+        min-width: 14px;
+        text-align: center;
+        line-height: 1.2;
       }
     }
   }
