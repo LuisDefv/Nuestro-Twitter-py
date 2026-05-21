@@ -39,7 +39,7 @@ class PostSerializer(serializers.ModelSerializer):
         return False
 
     def get_hashtags_list(self, obj):
-        return [h.name for h in obj.hashtags.all()]
+        return [h.hashtag.name for h in obj.hashtags.all()]
 
     def get_mentions_list(self, obj):
         return [m.user.username for m in obj.mentions.all()]
