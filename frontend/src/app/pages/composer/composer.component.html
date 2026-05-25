@@ -9,6 +9,8 @@
       <span class="char-count">{{ form.controls.content.value.length }}/280</span>
     </div>
 
+    <input formControlName="image_url" type="url" placeholder="URL de imagen (opcional)" />
+
     @if (error()) {
       <p class="error">{{ error() }}</p>
     }
