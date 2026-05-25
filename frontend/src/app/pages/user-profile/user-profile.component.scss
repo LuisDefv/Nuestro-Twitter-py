@@ -137,6 +137,28 @@
   border-top: 1px solid var(--border, #333);
 }
 
+.follow-list__item--row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .follow-list__link { flex: 1; min-width: 0; }
+}
+
+.follow-list__remove {
+  background: transparent;
+  border: 1px solid #ff4081;
+  color: #ff4081;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  white-space: nowrap;
+
+  &:hover { background: rgba(255, 64, 129, 0.1); }
+}
+
 .follow-list__link {
   display: flex;
   gap: 0.75rem;
