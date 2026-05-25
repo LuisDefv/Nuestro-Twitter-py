@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { LayoutComponent } from './layout/layout.component';
-import { authGuard } from './core/auth.guard';
+import { authGuard, publicGuard } from './core/auth.guard';
 import { PostDetailComponent } from './pages/post-detail/post-detail.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
@@ -11,7 +11,7 @@ import { SearchComponent } from './pages/search/search.component';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, canActivate: [publicGuard] },
   {
     path: '',
     component: LayoutComponent,
