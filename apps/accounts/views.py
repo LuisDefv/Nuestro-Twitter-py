@@ -75,6 +75,21 @@ def follow_user(request, username):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['DELETE'])
+@permission_classes([permissions.IsAuthenticated])
+def remove_follower(request, username):
+    follower = get_object_or_404(User, username=username)
+    deleted, _ = Follow.objects.filter(
+        follower=follower, following=request.user
+    ).delete()
+    if not deleted:
+        return Response(
+            {'error': 'Ese usuario no te sigue'},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class UserSearchView(generics.ListAPIView):
     serializer_class = PublicProfileSerializer
     permission_classes = [permissions.AllowAny]

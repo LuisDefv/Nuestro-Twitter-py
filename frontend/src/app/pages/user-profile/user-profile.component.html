@@ -81,7 +81,7 @@
           } @else {
             <ul class="follow-list">
               @for (u of followList(); track u.username) {
-                <li class="follow-list__item">
+                <li class="follow-list__item follow-list__item--row">
                   <a [routerLink]="['/users', u.username]" (click)="closeFollowModal()" class="follow-list__link">
                     @if (u.avatar_url) {
                       <img [src]="u.avatar_url" alt="avatar" class="follow-list__avatar" />
@@ -93,6 +93,11 @@
                       @if (u.bio) { <span class="follow-list__bio">{{ u.bio }}</span> }
                     </div>
                   </a>
+                  @if (mode === 'followers' && isOwnProfile()) {
+                    <button type="button" class="follow-list__remove" (click)="removeFollower(u.username)" title="Quitar seguidor">
+                      Quitar
+                    </button>
+                  }
                 </li>
               }
             </ul>

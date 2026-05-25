@@ -132,4 +132,15 @@ export class UserProfileComponent implements OnInit {
     this.followModalMode.set(null);
     this.followList.set([]);
   }
+
+  removeFollower(username: string): void {
+    if (!confirm(`¿Quitar a @${username} de tus seguidores?`)) return;
+    this.http.request('DELETE', `${this.apiBase}/users/${username}/remove-follower/`, { responseType: 'text' }).subscribe({
+      next: () => {
+        this.followList.update((list) => list.filter((u) => u.username !== username));
+        const p = this.profile();
+        if (p) this.profile.set({ ...p, followers_count: Math.max(0, p.followers_count - 1) });
+      },
+    });
+  }
 }
