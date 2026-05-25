@@ -22,13 +22,19 @@ export class ComposerComponent {
 
   form = this.fb.nonNullable.group({
     content: ['', [Validators.required, Validators.maxLength(280)]],
+    image_url: [''],
   });
 
   save(): void {
     if (this.form.invalid) return;
     this.saving.set(true);
     this.error.set(null);
-    this.http.post(`${this.apiBase}/posts/`, this.form.getRawValue()).subscribe({
+
+    const body: Record<string, any> = { content: this.form.controls.content.value };
+    const img = this.form.controls.image_url.value?.trim();
+    if (img) body['image_url'] = img;
+
+    this.http.post(`${this.apiBase}/posts/`, body).subscribe({
       next: () => this.router.navigate(['/']),
       error: (err: HttpErrorResponse) => {
         this.error.set(err.error?.content?.[0] || 'Error al crear post');

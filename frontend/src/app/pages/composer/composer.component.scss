@@ -34,6 +34,20 @@ textarea:focus {
   font-size: 0.85rem;
 }
 
+input[type="url"] {
+  background: var(--bg-soft, #111);
+  border: 1px solid var(--border, #333);
+  color: var(--text, #e0e0e0);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+input[type="url"]:focus {
+  outline: none;
+  border-color: var(--neon, #00ff41);
+}
+
 button {
   align-self: flex-end;
   background: var(--neon, #00ff41);
