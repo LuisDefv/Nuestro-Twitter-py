@@ -120,6 +120,54 @@ def delete_account(request):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def block_user(request, username):
+    target = get_object_or_404(User, username=username)
+    if target == request.user:
+        return Response(
+            {'error': 'No puedes bloquearte a ti mismo'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    _, created = BlockedUser.objects.get_or_create(
+        blocker=request.user, blocked=target
+    )
+    if not created:
+        return Response(
+            {'error': 'Ya tienes bloqueado a este usuario'},
+            status=status.HTTP_409_CONFLICT,
+        )
+    Follow.objects.filter(
+        Q(follower=request.user, following=target)
+        | Q(follower=target, following=request.user)
+    ).delete()
+    return Response(status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+@permission_classes([permissions.IsAuthenticated])
+def unblock_user(request, username):
+    target = get_object_or_404(User, username=username)
+    deleted, _ = BlockedUser.objects.filter(
+        blocker=request.user, blocked=target
+    ).delete()
+    if not deleted:
+        return Response(
+            {'error': 'No tienes bloqueado a este usuario'},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class BlockedUsersListView(generics.ListAPIView):
+    serializer_class = BlockedUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
+
+    def get_queryset(self):
+        return BlockedUser.objects.filter(blocker=self.request.user)
+
+
 class UserSearchView(generics.ListAPIView):
     serializer_class = PublicProfileSerializer
     permission_classes = [permissions.AllowAny]
