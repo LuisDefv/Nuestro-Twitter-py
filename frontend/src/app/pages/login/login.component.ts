@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, NgZone, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
@@ -20,6 +21,7 @@ export class LoginComponent implements AfterViewInit {
   private auth = inject(AuthService);
   private router = inject(Router);
   private zone = inject(NgZone);
+  private http = inject(HttpClient);
 
   mode = signal<Mode>('login');
   loading = signal(false);
@@ -38,7 +40,13 @@ export class LoginComponent implements AfterViewInit {
   });
 
   ngAfterViewInit(): void {
-    this.loadGoogleScript().then(() => this.renderGoogleButton());
+    // El Client ID viene del backend (env var GOOGLE_OAUTH_CLIENT_ID en Render).
+    this.http.get<{ google_client_id: string }>(`${environment.apiUrl}/config/`).subscribe({
+      next: (cfg) => {
+        if (!cfg.google_client_id) return; // Google no configurado en el server
+        this.loadGoogleScript().then(() => this.renderGoogleButton(cfg.google_client_id));
+      },
+    });
   }
 
   private loadGoogleScript(): Promise<void> {
@@ -62,10 +70,10 @@ export class LoginComponent implements AfterViewInit {
     });
   }
 
-  private renderGoogleButton(): void {
+  private renderGoogleButton(clientId: string): void {
     if (typeof google === 'undefined' || !google.accounts) return;
     google.accounts.id.initialize({
-      client_id: environment.googleClientId,
+      client_id: clientId,
       callback: (resp: { credential: string }) => this.handleGoogleCredential(resp.credential),
     });
     const container = document.getElementById('googleBtn');
