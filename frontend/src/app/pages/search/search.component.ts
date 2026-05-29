@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-search',
@@ -13,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 export class SearchComponent {
   private http = inject(HttpClient);
 
-  private readonly apiBase = 'http://localhost:8000/api';
+  private readonly apiBase = environment.apiUrl;
 
   query = '';
   results = signal<any[]>([]);

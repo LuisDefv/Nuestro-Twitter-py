@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../core/auth.service';
+import { environment } from '../../../environments/environment';
 
 interface PublicProfile {
   username: string;
@@ -45,7 +46,7 @@ export class UserProfileComponent implements OnInit {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
 
-  private readonly apiBase = 'http://localhost:8000/api';
+  private readonly apiBase = environment.apiUrl;
 
   profile = signal<PublicProfile | null>(null);
   posts = signal<Post[]>([]);

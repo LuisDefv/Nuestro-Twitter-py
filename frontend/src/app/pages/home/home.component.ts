@@ -2,6 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 interface AppConfig {
   site_name: string;
@@ -36,7 +37,7 @@ interface PaginatedPosts {
 export class HomeComponent implements OnInit {
   private http = inject(HttpClient);
 
-  private readonly apiBase = 'http://localhost:8000/api';
+  private readonly apiBase = environment.apiUrl;
 
   config = signal<AppConfig | null>(null);
   posts = signal<Post[]>([]);
