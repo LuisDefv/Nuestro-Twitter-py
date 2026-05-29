@@ -1,6 +1,7 @@
 """Endpoints de configuración pública (lo que Angular necesita en runtime)."""
 
 from constance import config
+from django.conf import settings
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -17,6 +18,7 @@ class ConfigView(APIView):
             'site_name': config.SITE_NAME,
             'post_max_chars': config.POST_MAX_CHARS,
             'posts_per_page': config.POSTS_PER_PAGE,
+            'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID,
         })
 
 
