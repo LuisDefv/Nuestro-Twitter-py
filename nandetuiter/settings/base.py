@@ -133,6 +133,9 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+# Google OAuth (login con Google). Client ID publico, no es secreto.
+GOOGLE_OAUTH_CLIENT_ID = config('GOOGLE_OAUTH_CLIENT_ID', default='')
+
 # CORS
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',

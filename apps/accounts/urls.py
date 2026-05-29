@@ -8,6 +8,7 @@ app_name = 'accounts'
 urlpatterns = [
     path('me/', views.MeView.as_view(), name='me'),
     path('auth/register/', views.RegisterView.as_view(), name='register'),
+    path('auth/google/', views.google_login, name='google-login'),
     path('users/', views.UserSearchView.as_view(), name='user-search'),
     path('users/<str:username>/', views.PublicProfileView.as_view(), name='public-profile'),
     path('users/<str:username>/follow/', views.follow_user, name='follow-user'),
