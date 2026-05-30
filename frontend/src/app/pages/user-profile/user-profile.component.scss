@@ -399,6 +399,27 @@
   }
 }
 
+.repost-container {
+  border: 1px solid var(--neon-dim, #1faa07);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+
+  .repost-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-muted, #888);
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}
+
 .post__head {
   display: flex;
   justify-content: space-between;
