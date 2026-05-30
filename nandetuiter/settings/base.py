@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'constance',
     'constance.backends.database',
+    'cloudinary',
 
     # Apps locales
     'apps.accounts',
@@ -141,6 +142,18 @@ CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
     default='http://localhost:4200',
     cast=Csv(),
+)
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME = config('CLOUDINARY_CLOUD_NAME', default='')
+CLOUDINARY_API_KEY = config('CLOUDINARY_API_KEY', default='')
+CLOUDINARY_API_SECRET = config('CLOUDINARY_API_SECRET', default='')
+
+import cloudinary
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
 )
 
 # django-constance: config editable desde admin
