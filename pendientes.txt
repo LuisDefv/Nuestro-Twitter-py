@@ -21,7 +21,8 @@
 *vista de "usuario bloqueado" al inspeccionar perfil + ocultar sus posts y demas info (mutuamente) + no poder seguir y quitar follow automaticamente al bloquear + ocultar usuario al ser buscado
 *actualizacion en tiempo real al seguir a una persona y al quitar follow
 *los comentarios aun no pueden ser respondidos
-
+*gmail obligatorio en register y mensaje de error
+*mensajes directos
 
 
 que el usuario tenga nombre aparte de su @
@@ -29,11 +30,9 @@ que el creador del post pueda limitar los comentarios
 separar notificaciones en "todos" y "menciones"
 guardar posts y lista de elementos guardados y mis me gusta
 feed algoritmico + separar feed en "para ti" y "siguiendo"
-mensajes directos
-transiciones al cambiar de vista o recargar feed
-gmail obligatorio en register y mensaje de error
-
-
+ver y poder ocultar estado "en linea" y ultima vez en linea
+mensaje enviado y visto
+seleccionar mensaje a responder y uso de emojis
 
 Indicadores del profesor:
 Usuarios con perfiles, posts, follows, feed personalizado y mensajes directos.
