@@ -66,6 +66,7 @@ export class UserProfileComponent implements OnInit {
   error = signal<string | null>(null);
   followLoading = signal(false);
   msgLoading = signal(false);
+  msgError = signal<string | null>(null);
   activeTab = signal<ProfileTab>('posts');
 
   followModalMode = signal<FollowModalMode>(null);
@@ -347,13 +348,27 @@ export class UserProfileComponent implements OnInit {
   sendMessage(): void {
     const p = this.profile();
     if (!p) return;
+    this.msgError.set(null);
+
+    const userId = p.id ?? (p as any).id;
+    if (!userId) {
+      this.msgError.set('No se pudo obtener el ID del usuario. Reintentá en unos segundos.');
+      console.error('[sendMessage] profile without id:', p);
+      return;
+    }
+
     this.msgLoading.set(true);
-    this.messaging.getOrCreateConversation(p.id).subscribe({
+    this.messaging.getOrCreateConversation(userId).subscribe({
       next: (conv) => {
         this.msgLoading.set(false);
+        this.msgError.set(null);
         this.router.navigate(['/messages'], { queryParams: { conv: conv.id } });
       },
-      error: () => this.msgLoading.set(false),
+      error: (err) => {
+        this.msgLoading.set(false);
+        this.msgError.set('Error al crear la conversación. ¿Seguro que el usuario existe?');
+        console.error('[sendMessage] error:', err);
+      },
     });
   }
 

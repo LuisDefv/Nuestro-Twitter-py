@@ -58,6 +58,9 @@
           <button class="block-btn" [class.blocked]="p.is_blocked" (click)="blockUser()">
             {{ p.is_blocked ? 'Desbloquear' : 'Bloquear' }}
           </button>
+          @if (msgError()) {
+            <p class="msg-error">{{ msgError() }}</p>
+          }
         </div>
       } @else {
         <a class="edit-btn" routerLink="/profile">Editar perfil</a>
