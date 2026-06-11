@@ -657,6 +657,14 @@
   align-items: flex-end;
 }
 
+.msg-error {
+  color: #ff5555;
+  font-size: 0.8rem;
+  margin: 0;
+  max-width: 180px;
+  text-align: right;
+}
+
 .msg-btn {
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
