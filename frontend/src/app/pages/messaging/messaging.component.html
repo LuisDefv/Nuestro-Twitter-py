@@ -1,4 +1,4 @@
-<section class="chat">
+<section class="chat" [class.chat--conv-active]="!!activeConvId()">
   <aside class="chat__sidebar">
     <header class="chat__sidebar-header">
       <h1>&gt; mensajes</h1>
@@ -37,48 +37,55 @@
   </aside>
 
   <div class="chat__main">
-    @if (chatLoading()) {
-      <div class="card card--loading"><p>&gt; cargando mensajes...</p></div>
-    } @else if (activeConvId()) {
-      <div class="chat__messages" #messageContainer (scroll)="onScroll()">
-        @for (msg of messages(); track msg.id) {
-          <div class="chat__msg" [class.own]="msg.sender.username === currentUsername()">
-            <div class="chat__msg-avatar">
-              @if (msg.sender.avatar_url) {
-                <img [src]="msg.sender.avatar_url" alt="" />
-              } @else {
-                <div class="placeholder-sm">{{ msg.sender.username[0] }}</div>
-              }
-            </div>
-            <div class="chat__msg-body">
-              <div class="chat__msg-header">
-                <strong>{{ '@' + msg.sender.username }}</strong>
-                <time>{{ msg.created_at | date:'short' }}</time>
+    @if (activeConvId()) {
+      <header class="chat__main-header">
+        <button class="chat__back-btn" (click)="backToList()">&larr;</button>
+        <h2>{{ otherParticipant(activeConv()) }}</h2>
+      </header>
+
+      @if (chatLoading()) {
+        <div class="card card--loading"><p>&gt; cargando mensajes...</p></div>
+      } @else {
+        <div class="chat__messages" #messageContainer tabindex="0" (scroll)="onScroll()">
+          @for (msg of messages(); track msg.id) {
+            <div class="chat__msg" [class.own]="msg.sender.username === currentUsername()">
+              <div class="chat__msg-avatar">
+                @if (msg.sender.avatar_url) {
+                  <img [src]="msg.sender.avatar_url" alt="" />
+                } @else {
+                  <div class="placeholder-sm">{{ msg.sender.username[0] }}</div>
+                }
               </div>
-              <p>{{ msg.content }}</p>
+              <div class="chat__msg-body">
+                <div class="chat__msg-header">
+                  <strong>{{ '@' + msg.sender.username }}</strong>
+                  <time>{{ msg.created_at | date:'short' }}</time>
+                </div>
+                <p>{{ msg.content }}</p>
+              </div>
             </div>
-          </div>
-        } @empty {
-          <div class="chat__empty">
-            <p>&gt; no hay mensajes aún. ¡Envía el primero!</p>
-          </div>
+          } @empty {
+            <div class="chat__empty">
+              <p>&gt; no hay mensajes aún. ¡Envía el primero!</p>
+            </div>
+          }
+        </div>
+
+        <div class="chat__input-bar">
+          <input
+            [(ngModel)]="newMessage"
+            (keyup.enter)="send()"
+            placeholder="Escribe un mensaje..."
+            class="chat__input"
+          />
+          <button class="chat__send-btn" (click)="send()" [disabled]="!newMessage().trim()">
+            Enviar
+          </button>
+        </div>
+
+        @if (!connected()) {
+          <p class="chat__offline">&gt; reconectando...</p>
         }
-      </div>
-
-      <div class="chat__input-bar">
-        <input
-          [(ngModel)]="newMessage"
-          (keyup.enter)="send()"
-          placeholder="Escribe un mensaje..."
-          class="chat__input"
-        />
-        <button class="chat__send-btn" (click)="send()" [disabled]="!newMessage().trim()">
-          Enviar
-        </button>
-      </div>
-
-      @if (!connected()) {
-        <p class="chat__offline">&gt; reconectando...</p>
       }
     } @else {
       <div class="chat__placeholder">

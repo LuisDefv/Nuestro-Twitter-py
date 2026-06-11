@@ -5,6 +5,7 @@ import {
   OnInit,
   OnDestroy,
   ViewChild,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -33,6 +34,9 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
   connected = this.msgs.connected;
   activeConvId = this.msgs.activeConversationId;
   currentUsername = this.auth.username;
+  activeConv = computed(() =>
+    this.conversations().find((c) => c.id === this.activeConvId()) ?? null
+  );
 
   loading = signal(true);
   chatLoading = signal(false);
@@ -60,6 +64,10 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnDestroy(): void {
+    this.msgs.disconnectWebSocket();
+  }
+
+  backToList(): void {
     this.msgs.disconnectWebSocket();
   }
 
@@ -95,14 +103,16 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.autoScrollEnabled = true;
   }
 
-  otherParticipant(conv: Conversation): string {
+  otherParticipant(conv: Conversation | null): string {
+    if (!conv) return '';
     const user = conv.participants.find(
       (p) => p.username !== this.auth.username()
     );
     return user?.username ?? 'Desconocido';
   }
 
-  otherAvatar(conv: Conversation): string {
+  otherAvatar(conv: Conversation | null): string {
+    if (!conv) return '';
     const user = conv.participants.find(
       (p) => p.username !== this.auth.username()
     );
