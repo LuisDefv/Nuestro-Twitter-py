@@ -116,6 +116,11 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
+  }
+
   private loadBlockedUsers(): void {
     this.loadingBlocked.set(true);
     this.http.get<BlockedUser[]>(`${this.apiBase}/me/blocked/`).subscribe({
