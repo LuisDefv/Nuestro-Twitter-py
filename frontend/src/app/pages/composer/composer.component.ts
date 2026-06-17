@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { SearchService, SuggestedHashtag, SuggestedUser } from '../../core/search.service';
 import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
+import { EmojiPickerComponent } from '../../shared/emoji-picker/emoji-picker.component';
 
 type SuggestionType = 'user' | 'hashtag' | null;
 
@@ -18,7 +19,7 @@ interface ActiveSuggestion {
 @Component({
   selector: 'app-composer',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, EmojiPickerComponent],
   templateUrl: './composer.component.html',
   styleUrl: './composer.component.scss',
 })
@@ -275,6 +276,21 @@ export class ComposerComponent {
     this.suggestedHashtags = [];
     this.activeSuggestion = null;
     this.selectedIndex = 0;
+  }
+
+  addEmoji(emoji: string): void {
+    const textarea = this.textareaRef?.nativeElement;
+    const content = this.form.controls.content.value;
+    const cursorPos = textarea?.selectionStart ?? content.length;
+    const newContent = content.slice(0, cursorPos) + emoji + content.slice(cursorPos);
+    this.form.controls.content.setValue(newContent);
+    setTimeout(() => {
+      if (textarea) {
+        const pos = cursorPos + emoji.length;
+        textarea.focus();
+        textarea.setSelectionRange(pos, pos);
+      }
+    });
   }
 
   truncateBio(bio: string): string {

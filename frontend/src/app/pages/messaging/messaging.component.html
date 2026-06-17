@@ -86,6 +86,7 @@
         </div>
 
         <div class="chat__input-bar">
+          <app-emoji-picker (emojiSelected)="addEmoji($event)" />
           <input
             [(ngModel)]="newMessage"
             (keyup.enter)="send()"

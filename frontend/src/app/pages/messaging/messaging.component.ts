@@ -14,11 +14,12 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { MessagingService, Conversation } from '../../core/messaging.service';
+import { EmojiPickerComponent } from '../../shared/emoji-picker/emoji-picker.component';
 
 @Component({
   selector: 'app-messaging',
   standalone: true,
-  imports: [DatePipe, FormsModule, RouterLink],
+  imports: [DatePipe, FormsModule, RouterLink, EmojiPickerComponent],
   templateUrl: './messaging.component.html',
   styleUrl: './messaging.component.scss',
 })
@@ -146,6 +147,10 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.msgs.sendViaWebSocket(content);
     this.newMessage.set('');
     this.autoScrollEnabled = true;
+  }
+
+  addEmoji(emoji: string): void {
+    this.newMessage.update(v => v + emoji);
   }
 
   otherParticipant(conv: Conversation | null): string {

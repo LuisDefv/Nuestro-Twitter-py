@@ -11,6 +11,7 @@ import { SearchComponent } from './pages/search/search.component';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { MessagingComponent } from './pages/messaging/messaging.component';
+import { MyLikesComponent } from './pages/my-likes/my-likes.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [publicGuard] },
@@ -27,6 +28,7 @@ export const routes: Routes = [
       { path: 'search', component: SearchComponent },
       { path: 'notifications', component: NotificationsComponent },
       { path: 'settings', component: SettingsComponent },
+      { path: 'me/likes', component: MyLikesComponent },
       { path: 'messages', component: MessagingComponent },
     ],
   },

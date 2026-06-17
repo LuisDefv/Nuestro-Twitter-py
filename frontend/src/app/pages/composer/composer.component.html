@@ -57,6 +57,7 @@
     </div>
 
     <div class="composer__info">
+      <app-emoji-picker (emojiSelected)="addEmoji($event)" />
       <span class="char-count">{{ form.controls.content.value.length }}/280</span>
     </div>
 
