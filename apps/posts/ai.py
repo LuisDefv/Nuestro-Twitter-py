@@ -27,6 +27,18 @@ SYSTEM_PROMPT = (
     'caracteres. No uses hashtags ni te presentes, andá directo a responder.'
 )
 
+# Personalidad para chat privado (DM): igual onda pero conversacional.
+CHAT_SYSTEM_PROMPT = (
+    'Sos {name}, un bot de IA en una red social tipo Twitter, chateando por '
+    'mensaje privado (DM) con un usuario. Sos paraguayo, cheto asunceno: '
+    'hablás canchero con jopara y slang paraguayo (ej: "che olou", "nde", '
+    '"luego", "ko", "pio", "na", "guapo/a"), sin exagerar tanto que no se '
+    'entienda. Respondés con ingenio, humor y un toque sarcástico estilo Grok, '
+    'pero siempre útil y sin ser ofensivo. Conversá natural; podés extenderte '
+    'un poco más que en un comentario pero sin escribir testamentos. No uses '
+    'hashtags ni te presentes en cada mensaje.'
+)
+
 
 def get_bot_user():
     """Devuelve (creando si hace falta) el usuario del bot de IA."""
@@ -54,29 +66,23 @@ def _max_chars():
         return 280
 
 
-def generate_reply(user_text, context_text=''):
-    """Llama a Gemini y devuelve el texto de la respuesta, o None si falla."""
+def _gemini_request(system, contents, max_output_tokens=300):
+    """Llama a Gemini con un system prompt y una lista de `contents`.
+
+    Devuelve el texto generado, o None si la key falta, la API falla o la
+    respuesta vino vacía/bloqueada (mejor silencio que postear un error).
+    """
     api_key = settings.GEMINI_API_KEY
     if not api_key:
         logger.warning('GEMINI_API_KEY no configurada; el bot no puede responder.')
         return None
 
-    max_chars = _max_chars()
-    system = SYSTEM_PROMPT.format(name=settings.AI_BOT_USERNAME, max_chars=max_chars)
-
-    prompt = user_text.strip()
-    if context_text:
-        prompt = (
-            f'Contexto del post original: "{context_text.strip()}"\n\n'
-            f'El usuario te dijo: "{user_text.strip()}"'
-        )
-
     url = GEMINI_URL.format(model=settings.GEMINI_MODEL)
     payload = {
         'system_instruction': {'parts': [{'text': system}]},
-        'contents': [{'parts': [{'text': prompt}]}],
+        'contents': contents,
         'generationConfig': {
-            'maxOutputTokens': 300,
+            'maxOutputTokens': max_output_tokens,
             'temperature': 0.9,
         },
     }
@@ -94,8 +100,6 @@ def generate_reply(user_text, context_text=''):
         logger.error('Error llamando a Gemini: %s', exc)
         return None
 
-    # Si la respuesta vino vacía, bloqueada por seguridad o sin texto usable,
-    # NO respondemos (mejor silencio que postear un error).
     candidates = data.get('candidates') or []
     if not candidates:
         logger.warning('Gemini sin candidates (posible bloqueo): %s', data.get('promptFeedback'))
@@ -105,11 +109,54 @@ def generate_reply(user_text, context_text=''):
     except (KeyError, IndexError, TypeError):
         logger.warning('Gemini sin texto usable en la respuesta.')
         return None
+    return text or None
+
+
+def generate_reply(user_text, context_text=''):
+    """Llama a Gemini y devuelve el texto de la respuesta, o None si falla."""
+    max_chars = _max_chars()
+    system = SYSTEM_PROMPT.format(name=settings.AI_BOT_USERNAME, max_chars=max_chars)
+
+    prompt = user_text.strip()
+    if context_text:
+        prompt = (
+            f'Contexto del post original: "{context_text.strip()}"\n\n'
+            f'El usuario te dijo: "{user_text.strip()}"'
+        )
+
+    text = _gemini_request(system, [{'parts': [{'text': prompt}]}], max_output_tokens=300)
     if not text:
         return None
 
     if len(text) > max_chars:
         text = text[: max_chars - 1].rstrip() + '…'
+    return text
+
+
+def generate_chat_reply(history):
+    """Respuesta conversacional para DM.
+
+    `history` es una lista cronológica de dicts {'is_bot': bool, 'content': str}.
+    """
+    system = CHAT_SYSTEM_PROMPT.format(name=settings.AI_BOT_USERNAME)
+    contents = [
+        {
+            'role': 'model' if msg['is_bot'] else 'user',
+            'parts': [{'text': msg['content']}],
+        }
+        for msg in history
+        if msg['content'].strip()
+    ]
+    if not contents:
+        return None
+
+    text = _gemini_request(system, contents, max_output_tokens=500)
+    if not text:
+        return None
+
+    max_len = 800
+    if len(text) > max_len:
+        text = text[: max_len - 1].rstrip() + '…'
     return text
 
 
@@ -148,5 +195,68 @@ def reply_to_mention(post_id):
         Post.objects.create(author=bot, content=content, parent=post)
     except Exception as exc:  # noqa: BLE001 - thread, no queremos que reviente
         logger.error('Fallo generando respuesta del bot: %s', exc)
+    finally:
+        connection.close()
+
+
+def reply_to_dm(conversation_id, history_limit=12):
+    """Genera y publica la respuesta del bot en una conversación de DM.
+
+    Pensado para correr en un thread aparte; abre y cierra su propia conexión.
+    Además emite el mensaje por el channel layer para que los clientes con el
+    WebSocket abierto lo reciban en vivo.
+    """
+    from asgiref.sync import async_to_sync
+    from channels.layers import get_channel_layer
+    from django.db import connection
+
+    from apps.messaging.models import Conversation, Message
+
+    try:
+        bot = get_bot_user()
+        conv = Conversation.objects.filter(
+            id=conversation_id, participants=bot
+        ).first()
+        if not conv:
+            return
+
+        recent = list(
+            conv.messages.select_related('sender').order_by('-created_at')[:history_limit]
+        )
+        recent.reverse()
+        if not recent:
+            return
+        # Si el último mensaje ya es del bot, no respondemos (evita loops).
+        if recent[-1].sender_id == bot.id:
+            return
+
+        history = [
+            {'is_bot': m.sender_id == bot.id, 'content': m.content}
+            for m in recent
+        ]
+        text = generate_chat_reply(history)
+        if not text:
+            return
+
+        message = Message.objects.create(
+            conversation=conv, sender=bot, content=text
+        )
+
+        channel_layer = get_channel_layer()
+        if channel_layer is not None:
+            async_to_sync(channel_layer.group_send)(
+                f'chat_{conv.id}',
+                {
+                    'type': 'chat_message',
+                    'id': message.id,
+                    'sender_id': bot.id,
+                    'sender_username': bot.username,
+                    'sender_avatar': bot.avatar_url,
+                    'content': message.content,
+                    'created_at': message.created_at.isoformat(),
+                },
+            )
+    except Exception as exc:  # noqa: BLE001 - thread, no queremos que reviente
+        logger.error('Fallo generando respuesta DM del bot: %s', exc)
     finally:
         connection.close()
